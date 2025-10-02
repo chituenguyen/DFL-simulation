@@ -1,0 +1,68 @@
+# DFL Test Configuration - Lightweight for quick testing
+experiment:
+  name: "dfl_test_quick"
+  seed: 42
+  device: "mps"  # Use Apple Metal Performance Shaders for GPU acceleration
+
+# Model Configuration
+model:
+  name: "resnet18"
+  num_classes: 10
+  pretrained: false
+
+# Dataset Configuration
+data:
+  dataset: "cifar10"
+  data_dir: "./data"
+  batch_size: 64  # Reduced for faster startup
+  num_workers: 2  # Optimal for M2 without resource contention
+
+# Data Partitioning
+partition:
+  num_nodes: 3  # Fewer nodes
+  partition_type: "non_iid"
+  alpha: 0.5
+
+# Training Configuration
+training:
+  num_rounds: 3  # Only 3 rounds for quick test
+  local_epochs: 2  # Fewer epochs per round
+  learning_rate: 0.01
+  optimizer: "sgd"
+  momentum: 0.9
+  weight_decay: 0.0005
+
+# Network Topology
+topology:
+  type: "ring"
+  neighbors: 2
+
+# Aggregation
+aggregation:
+  algorithm: "fedavg"
+  weighted: true
+  adaptive_weighting: false
+  momentum: 0.1
+
+# Communication
+communication:
+  latency_ms: 10.0
+  bandwidth_mbps: 100.0
+
+# Privacy Settings
+privacy:
+  differential_privacy: false
+  noise_multiplier: 0.1
+  max_grad_norm: 1.0
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  save_dir: "./results/logs"
+  tensorboard: true
+
+# Checkpoint Configuration
+checkpoint:
+  save_frequency: 2  # Save every 2 rounds
+  save_dir: "./results/models"
+  keep_last: 3

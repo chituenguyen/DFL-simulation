@@ -1,0 +1,47 @@
+aggregation:
+  adaptive_weighting: false
+  algorithm: fedavg
+  momentum: 0.1
+  weighted: true
+checkpoint:
+  keep_last: 3
+  save_dir: ./results/models
+  save_frequency: 2
+communication:
+  bandwidth_mbps: 100.0
+  latency_ms: 10.0
+data:
+  batch_size: 64
+  data_dir: ./data
+  dataset: cifar10
+  num_workers: 2
+experiment:
+  device: mps
+  name: dfl_test_quick
+  seed: 42
+logging:
+  level: INFO
+  save_dir: ./results/logs
+  tensorboard: true
+model:
+  name: resnet18
+  num_classes: 10
+  pretrained: false
+partition:
+  alpha: 0.5
+  num_nodes: 3
+  partition_type: non_iid
+privacy:
+  differential_privacy: false
+  max_grad_norm: 1.0
+  noise_multiplier: 0.1
+topology:
+  neighbors: 2
+  type: ring
+training:
+  learning_rate: 0.01
+  local_epochs: 2
+  momentum: 0.9
+  num_rounds: 3
+  optimizer: sgd
+  weight_decay: 0.0005
