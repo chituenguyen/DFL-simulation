@@ -281,10 +281,10 @@ def main():
 
     subsets = partitioner.partition_class_based(class_assignments)
 
-    # Node config - CRITICAL: Very low LR for P2P stability
+    # Node config - CRITICAL: Balance between learning and stability
     config = {
         'device': device,
-        'learning_rate': 0.0001,  # Ultra-low LR to prevent oscillation
+        'learning_rate': 0.0003,  # Balanced LR for P2P (not too low, not too high)
         'optimizer': 'sgd',
         'momentum': 0.9,
         'weight_decay': 0.002  # Strong regularization
@@ -345,7 +345,7 @@ def main():
     aggregators = {i: FedAvgAggregator(weighted=True) for i in range(3)}
 
     # Phase 3: P2P Federated Training
-    num_rounds = 200  # Many more rounds needed with ultra-low LR
+    num_rounds = 100  # Moderate rounds with balanced LR
     local_epochs = 1  # Keep at 1 to avoid overfitting
     start_round = 1
 
