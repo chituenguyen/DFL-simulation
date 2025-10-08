@@ -122,9 +122,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Data and results
-data/
-results/
+# Data and results (but not src/data source code!)
+/data/
+/results/
 *.pth
 *.pkl
 *.h5
