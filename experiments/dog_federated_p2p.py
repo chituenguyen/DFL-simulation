@@ -73,7 +73,7 @@ def print_section(text: str):
     print(f"{'─' * 80}")
 
 
-def train_single_class_model(device, class_id, class_name, save_path, num_epochs=5):
+def train_single_class_model(device, class_id, class_name, save_path, num_epochs=10):
     """
     Train a model on a single class or load from cache
 
@@ -131,10 +131,10 @@ def train_single_class_model(device, class_id, class_name, save_path, num_epochs
 
     config = {
         'device': device,
-        'learning_rate': 0.005,  # Lower LR for pretrain
+        'learning_rate': 0.003,  # Even lower LR for better pretrain
         'optimizer': 'sgd',
         'momentum': 0.9,
-        'weight_decay': 0.001  # Higher regularization
+        'weight_decay': 0.002  # Stronger regularization
     }
 
     node = BaseNode(
@@ -281,13 +281,13 @@ def main():
 
     subsets = partitioner.partition_class_based(class_assignments)
 
-    # Node config
+    # Node config - CRITICAL: Very low LR for P2P stability
     config = {
         'device': device,
-        'learning_rate': 0.0005,  # Very low LR for P2P FL to prevent forgetting
+        'learning_rate': 0.0001,  # Ultra-low LR to prevent oscillation
         'optimizer': 'sgd',
         'momentum': 0.9,
-        'weight_decay': 0.001  # Higher regularization
+        'weight_decay': 0.002  # Strong regularization
     }
 
     # Check if local models exist (from previous P2P FL rounds)
@@ -345,8 +345,8 @@ def main():
     aggregators = {i: FedAvgAggregator(weighted=True) for i in range(3)}
 
     # Phase 3: P2P Federated Training
-    num_rounds = 100  # More rounds needed for P2P with lower LR
-    local_epochs = 1
+    num_rounds = 200  # Many more rounds needed with ultra-low LR
+    local_epochs = 1  # Keep at 1 to avoid overfitting
     start_round = 1
 
     # Check for existing checkpoint

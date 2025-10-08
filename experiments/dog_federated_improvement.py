@@ -69,7 +69,7 @@ def print_section(text: str):
     print(f"{'─' * 80}")
 
 
-def train_single_class_model(device, class_id, class_name, save_path, num_epochs=5):
+def train_single_class_model(device, class_id, class_name, save_path, num_epochs=10):
     """
     Train a model on a single class or load from cache
 
@@ -127,10 +127,10 @@ def train_single_class_model(device, class_id, class_name, save_path, num_epochs
 
     config = {
         'device': device,
-        'learning_rate': 0.005,  # Lower LR for pretrain to avoid overfit
+        'learning_rate': 0.003,  # Lower LR for better pretrain
         'optimizer': 'sgd',
         'momentum': 0.9,
-        'weight_decay': 0.001  # Higher weight decay for regularization
+        'weight_decay': 0.002  # Stronger regularization
     }
 
     node = BaseNode(
@@ -286,10 +286,10 @@ def main():
     # Node 0: Use pre-trained DOG model
     config = {
         'device': device,
-        'learning_rate': 0.0005,  # Very low LR to prevent forgetting
+        'learning_rate': 0.0002,  # Ultra-low LR for centralized FL
         'optimizer': 'sgd',
         'momentum': 0.9,
-        'weight_decay': 0.001  # Higher regularization
+        'weight_decay': 0.002  # Strong regularization
     }
 
     # Check if local models exist (from previous FL rounds)
@@ -325,7 +325,7 @@ def main():
     aggregator = FedAvgAggregator(weighted=True)
 
     # Phase 3: Federated Training
-    num_rounds = 100  # More rounds with very low LR
+    num_rounds = 150  # More rounds with ultra-low LR
     local_epochs = 1  # Keep at 1 to prevent overfitting
     start_round = 1
 
