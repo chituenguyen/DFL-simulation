@@ -57,9 +57,22 @@ class NodeManager:
             seed=self.config['experiment']['seed']
         )
 
-        if self.config['partition']['partition_type'] == 'iid':
+        # **NEW LOGIC** - Support class_based partition type
+        partition_type = self.config['partition']['partition_type']
+        
+        if partition_type == 'iid':
             node_datasets = partitioner.partition_iid()
-        else:
+        elif partition_type == 'class_based':
+            # Get class assignments from config
+            class_assignments = self.config['partition'].get('class_assignments', None)
+            if class_assignments is None:
+                raise ValueError(
+                    "class_assignments must be specified in config for class_based partitioning. "
+                    "Example: class_assignments: [[0,1], [2,3], [4,5], [6,7], [8,9]]"
+                )
+            logger.info(f"Using CLASS-BASED partitioning with assignments: {class_assignments}")
+            node_datasets = partitioner.partition_class_based(class_assignments)
+        else:  # non_iid (default - Dirichlet)
             node_datasets = partitioner.partition_dirichlet()
 
         # Create nodes

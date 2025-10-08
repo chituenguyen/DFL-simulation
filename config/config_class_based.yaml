@@ -1,0 +1,78 @@
+# DFL Configuration - Class-based Partitioning
+# Mỗi node train 2 classes cụ thể
+experiment:
+  name: "dfl_class_based_5nodes"
+  seed: 42
+  device: "mps"  # cuda, cpu, mps
+
+# Model Configuration
+model:
+  name: "resnet18"
+  num_classes: 10
+  pretrained: false
+
+# Dataset Configuration
+data:
+  dataset: "cifar10"
+  data_dir: "./data"
+  batch_size: 128
+  num_workers: 4
+
+# Data Partitioning - CLASS BASED
+# 5 nodes, mỗi node train 2 classes
+partition:
+  num_nodes: 5
+  partition_type: "class_based"  # Mỗi node train các class cụ thể
+  alpha: 0.5  # Không dùng cho class_based
+  # CIFAR-10 classes: 0=airplane, 1=auto, 2=bird, 3=cat, 4=deer, 
+  #                   5=dog, 6=frog, 7=horse, 8=ship, 9=truck
+  class_assignments:
+    - [0, 1]  # Node 0: Airplane, Automobile
+    - [2, 3]  # Node 1: Bird, Cat
+    - [4, 5]  # Node 2: Deer, Dog
+    - [6, 7]  # Node 3: Frog, Horse
+    - [8, 9]  # Node 4: Ship, Truck
+
+# Training Configuration
+training:
+  num_rounds: 50
+  local_epochs: 5
+  learning_rate: 0.01
+  momentum: 0.9
+  weight_decay: 0.0005
+  optimizer: "sgd"  # sgd, adam
+
+# Network Topology
+topology:
+  type: "ring"  # ring, mesh, star, random
+  neighbors: 2  # Number of neighbors per node
+
+# Aggregation
+aggregation:
+  algorithm: "fedavg"
+  weighted: true  # Weight by dataset size
+  momentum: 0.1  # Momentum for aggregation (0.0 = no momentum)
+  adaptive_weighting: false  # Use adaptive weighting based on performance
+
+# Logging
+logging:
+  level: "INFO"
+  save_dir: "./results/logs"
+  tensorboard: true
+
+# Communication Settings
+communication:
+  latency_ms: 10.0  # Network latency in milliseconds
+  bandwidth_mbps: 100.0  # Network bandwidth in Mbps
+
+# Checkpointing
+checkpoint:
+  save_dir: "./results/models"
+  save_frequency: 10  # Save every N rounds
+  keep_last: 3  # Keep last N checkpoints
+
+# Privacy Settings
+privacy:
+  differential_privacy: false
+  noise_multiplier: 0.1
+  max_grad_norm: 1.0

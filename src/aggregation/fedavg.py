@@ -70,7 +70,13 @@ class FedAvgAggregator:
 
             for param_name, param_value in model_params.items():
                 if param_name in aggregated_params:
-                    aggregated_params[param_name] += weight * param_value
+                    # Skip non-float parameters (like batch norm running stats)
+                    if param_value.dtype in [torch.float32, torch.float64, torch.float16]:
+                        aggregated_params[param_name] += weight * param_value
+                    else:
+                        # For integer types, just take the first model's value
+                        if aggregated_params[param_name].sum() == 0:
+                            aggregated_params[param_name] = param_value.clone()
                 else:
                     logger.warning(f"Parameter {param_name} not found in base model")
 
