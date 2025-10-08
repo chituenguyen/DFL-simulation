@@ -325,7 +325,7 @@ def main():
     aggregator = FedAvgAggregator(weighted=True)
 
     # Phase 3: Federated Training
-    num_rounds = 150  # More rounds with ultra-low LR
+    num_rounds = 150  # More rounds with ultra-low LR for gradual convergence
     local_epochs = 1  # Keep at 1 to prevent overfitting
     start_round = 1
 
