@@ -345,7 +345,7 @@ def main():
     aggregators = {i: FedAvgAggregator(weighted=True) for i in range(3)}
 
     # Phase 3: P2P Federated Training
-    num_rounds = 100  # Moderate rounds with balanced LR for P2P convergence
+    num_rounds = 30  # Moderate rounds with balanced LR for P2P convergence
     local_epochs = 1  # Keep at 1 to avoid overfitting
     start_round = 1
 
